@@ -17,17 +17,18 @@ const reviewsRouter = require("./reviews/reviews.router");
  app.use("/reviews", reviewsRouter);
 
 
-//methods here
+
+// Not found handler
+app.use((req, res) => {
+  res.status(404).json({ error: `Not found: ${req.originalUrl}` });
+});
 
 
-//error handlers
- app.use((req, res, next) => {
-    next({ status: 404, message: `Not found: ${req.originalUrl}` })
- });
-
- app.use((err, req, res, next) => {
-    const { status = 500, message = "Something went wrong!" } = err;
-    res.status(status).json({ error: message });
- })
+// Error handler
+app.use((error, req, res, next) => {
+  console.error(error);
+  const { status = 500, message = "error"} = error;
+  res.status(status).send({ error: message });
+});
 
 module.exports = app;
